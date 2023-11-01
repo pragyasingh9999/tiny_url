@@ -1,0 +1,7 @@
+route = 
+
+POST / -> generate tiny url using shortid and then send it to user 
+
+GET /URL -> redirect to original site
+
+GET /URL/analytics/:id -> return clicks for provided short id
