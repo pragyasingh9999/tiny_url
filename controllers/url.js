@@ -7,8 +7,6 @@ async function handleGenerateShortID(req,res){
     if(!body.url) return res.status(400).json({error: "URL required"});
 
     const shortId=  shortID();
-    console.log(shortId);
-    console.log(body.url);
     
     await myURL.create({
         shortId: shortId,
@@ -16,7 +14,20 @@ async function handleGenerateShortID(req,res){
         visitHistory: []
     });
 
-    return res.json({id: shortId});
+    return res.render("home", {
+        id:shortId,
+    });
+
+}
+
+async function handleGetUrlById(req,res){
+    const shortId= req.params.shortId;
+   
+    const entry= await myURL.findOneAndUpdate(
+        {shortId}, {$push:{visitHistory: {timestamp : Date.now()},},}
+    );
+    
+    res.redirect(entry.redirectUrl);
 }
 
 async function handleNumberOfClicks(req,res){
@@ -28,5 +39,6 @@ async function handleNumberOfClicks(req,res){
 
 module.exports= {
     handleGenerateShortID,
-    handleNumberOfClicks
+    handleNumberOfClicks,
+    handleGetUrlById
 }
